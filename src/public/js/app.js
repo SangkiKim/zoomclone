@@ -27,6 +27,10 @@ const handleSubmit = (event) => {
     const input  = messageForm.querySelector("input");
     socket.send(makeMessage("new_message",input.value));
     input.value = "";
+    const li = document.createElement("li");
+    li.innerText = `You : ${message.data}`;
+    messageList.append(li);
+
 }
 
 const handleNickSubmit = (event) => {
