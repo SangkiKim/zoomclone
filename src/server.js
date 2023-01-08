@@ -16,11 +16,8 @@ const httpServer = http.createServer(app); // httpサーバーにアクセス
 const wsServer = SocketIO(httpServer);
 
 wsServer.on("connection", socket => {
-    socket.on("enter_room", (msg, done) => {
-        console.log(msg);
-        setTimeout(() => {
-            done();
-        }, 10000);
+    socket.on("enter_room", (a,b,c,d) => {
+        console.log(a,b,c,d);
     });
 });
 
