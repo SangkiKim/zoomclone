@@ -15,9 +15,27 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 const httpServer = http.createServer(app); // httpサーバーにアクセス
 const wsServer = SocketIO(httpServer);
 
-wsServer.on("connection", socket => {
-    socket.on("enter_room", (a,b,c,d) => {
-        console.log(a,b,c,d);
+wsServer.on("connection", (socket) => {
+    socket["nickname"] = "Anon";
+    socket.onAny((event) => {
+        console.log(`Socket Event : ${event}`);
+    });
+    socket.on("enter_room", (roomName,done) => {
+        socket.join(roomName); // roomNameを持ったroomにjoin
+        done();
+        socket.to(roomName).emit("welcome", socket.nickname); // (event name)
+    });
+    socket.on("disconnecting", () => {
+        socket.rooms.forEach((room) => socket.to(room).emit("bye", socket.nickname));
+    });
+    socket.on("new_message", (msg, room, done) => {
+        socket.to(room).emit("new_message", `${socket.nickname}: ${msg}`);
+        done();
+    });
+    socket.on("nickname", (nickname, done) => {
+        console.log(nickname);
+        socket["nickname"] = nickname;
+        done();
     });
 });
 
