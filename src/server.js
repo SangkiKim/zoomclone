@@ -38,7 +38,7 @@ wsServer.on("connection", (socket) => {
     });
     socket.on("enter_room", (roomName,done) => {
         socket.join(roomName); // roomNameを持ったroomにjoin
-        done();
+        done(countRoom(roomName));
         socket.to(roomName).emit("welcome", socket.nickname, countRoom(roomName)); // (event name, msg) 特定roomにのみメッセージを送る
         wsServer.sockets.emit("room_change", publicRooms()); // すべてのroomにメッセージを送る
     });
@@ -53,9 +53,9 @@ wsServer.on("connection", (socket) => {
         done();
     });
     socket.on("nickname", (nickname, done) => {
-        console.log(nickname);
         socket["nickname"] = nickname;
         done();
+        wsServer.sockets.emit("room_change", publicRooms()); // すべてのroomにメッセージを送る
     });
 });
 

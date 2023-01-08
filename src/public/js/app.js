@@ -35,11 +35,11 @@ function showRoomInput(){
 }
 
 
-function showRoom(){
+function showRoom(newCount){
     welcome.hidden = true;
     room.hidden = false;
     const h3 = room.querySelector("h3");
-    h3.innerText = `Room ${roomName}`;
+    h3.innerText = `Room ${roomName} (${newCount})`;
     const msgForm = room.querySelector("#msg");
     msgForm.addEventListener("submit", handleMessageSubmit);
     nameForm.addEventListener("submit", handleNicknameSubmit);
@@ -51,6 +51,11 @@ function handleRoomSubmit(event){
     socket.emit("enter_room",input.value.toString(),showRoom); // emit(event : なんでも可能, param : StringもintもJavascript Objectもそのまま転送可能, func : サーバーに関数を転送→サーバーが関数を実行→frontendで実行される)
     roomName = input.value.toString();
     input.value = "";
+}
+
+function handleRoomEnter(event){
+    roomName = event.target.innerText;
+    socket.emit("enter_room",roomName,showRoom); // emit(event : なんでも可能, param : StringもintもJavascript Objectもそのまま転送可能, func : サーバーに関数を転送→サーバーが関数を実行→frontendで実行される)
 }
 
 function handleNicknameSubmit(event){
@@ -85,6 +90,7 @@ socket.on("room_change", (rooms) => {
         const li = document.createElement("li");
         li.innerText = room;
         roomList.append(li);
+        li.addEventListener("click", handleRoomEnter);
     })
 }); 
 
