@@ -16,7 +16,12 @@ html(lang="en")
                     button Save  
             div#welcome
                 form
-                    input(type="text", placeholder="room name", required)
+                    label(for="quiz_list") Quiz Select
+                    select(id="quiz_list",required)
+                        each item in results 
+                            option(value=item["id"])= item["title"]
+                    label(for="room_name") Input room name
+                    input(id="room_name" type="text", placeholder="room name", required)
                     button Enter Room
                 h4 Open Rooms: 
                 ul

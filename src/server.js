@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
         'SELECT * FROM quiz',
         (error, results) => {
           console.log(results);
-          res.render("home")
+          res.render("home", {results : results});
         }
     );
 });
