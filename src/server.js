@@ -1,19 +1,47 @@
 import http from "http";
-import SocketIO from "socket.io";
+import { Server } from "socket.io";
 import express from "express";
+import mysql from "mysql";
 
 const app = express();
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'realtime_quiz',
+    password: 'tG5qDf8SaJUQyinF',
+    database: 'realtime_quiz'
+});
+
+connection.connect((err) => {
+    if (err) {
+      console.log('error connecting: ' + err.stack);
+      return;
+    }
+    console.log('Database connection success');
+});
 
 app.set("view engine","pug");
 app.set("views",__dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"));
-app.get("/", (req, res) => res.render("home"));
+app.get("/", (req, res) => {
+    connection.query(
+        'SELECT * FROM quiz',
+        (error, results) => {
+          console.log(results);
+          res.render("home")
+        }
+    );
+});
 app.get("/*", (req, res) => res.redirect("/"));
 
 const handleListen = () => console.log(`Listening on http://localhost:3000`);
 
 const httpServer = http.createServer(app); // httpサーバーにアクセス
-const wsServer = SocketIO(httpServer);
+const wsServer = new Server(httpServer,{
+    cors: {
+        origin: "*"
+    }
+});
 
 function publicRooms(){
     const sids = wsServer.sockets.adapter.sids;
