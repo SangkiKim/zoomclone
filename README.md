@@ -1,2 +1,2 @@
-# zoomclone
-zoom clone coding
+# Zoom clone
+Zoom clone using NodeJS, WebRTC and Websockets
